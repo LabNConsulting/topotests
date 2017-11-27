@@ -1,0 +1,17 @@
+from lutil import luCommand
+
+luCommand('r1', 'ip -d link show type vrf', '.', 'none', 'get detailed vrf info')
+luCommand('r1', 'ip -br link show type vrf', 'cust1 .*MASTER,UP,LOWER_UP', 'pass', 'Cust1 linux VRF configured')
+luCommand('r1', 'ip addr show vrf cust1', '192.168.1.1/24 .* r..eth4', 'pass', 'VRF interface configured')
+luCommand('r1','vtysh -c "show vrf"','vrf cust1 id . table 10','pass','Zebra sees VRF')
+luCommand('r3', 'ip -d link show type vrf', '.', 'none', 'get detailed vrf info')
+luCommand('r3', 'ip -br link show type vrf', 'cust1 .*MASTER,UP,LOWER_UP', 'pass', 'Cust1 linux VRF configured')
+luCommand('r3', 'ip addr show vrf cust1', '192.168.1.1/24 .* r..eth4', 'pass', 'VRF interface configured')
+luCommand('r3','vtysh -c "show vrf"','vrf cust1 id . table 10','pass','Zebra sees VRF')
+luCommand('r4', 'ip -d link show type vrf', '.', 'none', 'get detailed vrf info')
+luCommand('r4', 'ip -br link show type vrf', 'cust1 .*MASTER,UP,LOWER_UP', 'pass', 'Cust1 linux VRF configured')
+luCommand('r4', 'ip addr show vrf cust1', '192.168.1.1/24 .* r..eth4', 'pass', 'VRF interface configured')
+luCommand('r4','vtysh -c "show vrf"','vrf cust1 id . table 10','pass','Zebra sees VRF')
+luCommand('ce1','ping 192.168.1.1 -c 1','1 packets transmitted, 1 received','pass','CE->PE ping')
+luCommand('ce2','ping 192.168.1.1 -c 1','1 packets transmitted, 1 received','pass','CE->PE ping')
+luCommand('ce3','ping 192.168.1.1 -c 1','1 packets transmitted, 1 received','pass','CE->PE ping')
