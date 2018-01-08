@@ -61,6 +61,12 @@ def setup_module(mod):
     tgen.start_topology()
 
     logger.info('Topology started')
+    try:
+        autogenPreRouterStartHook()
+    except NameError:
+        #not defined
+        logger.debug("autogenPreRouterStartHook() not defined")
+
     # This is a sample of configuration loading.
     router_list = tgen.routers()
 
@@ -83,9 +89,11 @@ def setup_module(mod):
     # After loading the configurations, this function loads configured daemons.
     logger.info('Starting routers')
     tgen.start_router()
-
-    # For debugging after starting daemons, uncomment the next line
-    #tgen.mininet_cli()
+    try:
+        autogenPostRouterStartHook()
+    except NameError:
+        #not defined
+        logger.debug("autogenPostRouterStartHook() not defined")
 
 def teardown_module(mod):
     "Teardown the pytest environment"
