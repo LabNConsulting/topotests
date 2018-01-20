@@ -24,6 +24,7 @@ import shutil
 from topolog import logger
 
 class AutoGen:
+    scriptdir = '<not set>'
     autodir = '<not set>'
     test_runner = '<not set>'
     fd = None
@@ -48,10 +49,19 @@ def test_autogen_lu_finish():
 _au = AutoGen()
 
 def auInit(**lsArgs):
-    pwd = os.getcwd()
-    base = os.path.dirname(os.path.realpath(pwd))
+    pwd = os.path.dirname(os.path.realpath(__file__))
+    args = []
+    for arg in lsArgs:
+        args.append('%s="%s"' % (arg, lsArgs[arg]))
+        if arg == 'baseScriptDir':
+            pwd = lsArgs[arg]
+    _au.scriptdir = pwd
+    base = os.path.dirname(pwd)
     test = os.path.basename(pwd)
     autodir = os.path.join(base, 'autogen/{}'.format(test))
+    #print ("BASE:"+base)
+    #print ("TEST:"+test)
+    #print ("AUTO:"+autodir)
     #remove old directory
     if os.path.isdir(autodir):
         shutil.rmtree(autodir)
@@ -69,17 +79,15 @@ def auInit(**lsArgs):
     _au.test_runner = 'test_runner.py'
     _au.fd = open(os.path.join(autodir, 'autogen_tests.py'), 'a')
     _au.fd.write(_au.init_template)
-    args = []
-    for arg in lsArgs:
-        args.append('%s=%s' % (arg, lsArgs[arg]))
     s = ', '
     init = '    luStart('+s.join(args)+')\n'
     _au.fd.write(init)
 
 def auAddTest(script, SkipIfFailed=True, CallOnFail=None, CheckFunc=None):
     if not os.path.isfile(script):
-        logger.error('Could not find script file: ' + script)
-    assert os.path.isfile(script)
+        if not os.path.isfile(os.path.join(_au.scriptdir, script)):
+            logger.error('Could not find script file: ' + script)
+            assert 'Could not find script file: ' + script
     assert _au.fd != None
     indent = '    '
     _au.fd.write('\n\ndef test_autogen_{}():\n'.format(os.path.splitext(os.path.basename(script))[0]))
@@ -129,3 +137,4 @@ def auRun(args=''):
     assert os.path.isfile(_au.test_runner)
     ret = os.system('{} {}'.format(_au.test_runner, args))
     os.chdir(cwd)
+    return ret
