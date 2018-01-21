@@ -140,16 +140,20 @@ def autogenPreRouterStartHook():
     intfs = ['lo', 'r2-eth0', 'r2-eth1', 'r2-eth2']
     for intf in intfs:
         doCmd(tgen, 'r2', 'echo 1 > /proc/sys/net/mpls/conf/{}/input'.format(intf))
-    #configure MPLS
+    #configure VRFs & MPLS
     rtrs = ['r1', 'r3', 'r4']
-    cmds = ['echo 1 > /proc/sys/net/mpls/conf/lo/input']
+    cmds = ['ip link add cust1 type vrf table 10',
+            'ip ru add oif cust1 table 10',
+            'ip ru add iif cust1 table 10',
+            'ip link set dev cust1 up']
     for rtr in rtrs:
         for cmd in cmds:
             doCmd(tgen, rtr, cmd)
+        doCmd(tgen, rtr, 'ip link set dev {}-eth4 master cust1'.format(rtr))
         intfs = ['lo', rtr+'-eth0', rtr+'-eth4']
         for intf in intfs:
             doCmd(tgen, rtr, 'echo 1 > /proc/sys/net/mpls/conf/{}/input'.format(intf))
-    logger.info('setup mpls input')
+        logger.info('setup {0} vrf cust1, {0}-eth4. enabled mpls input.'.format(rtr))
     return;
 
 def autogenPostRouterStartHook():
