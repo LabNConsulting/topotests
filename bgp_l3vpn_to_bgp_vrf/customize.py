@@ -133,7 +133,7 @@ def doCmd(tgen, rtr, cmd):
     if len(output):
         logger.info('command output: ' + output)
 
-def autogenPreRouterStartHook():
+def ltemplatePreRouterStartHook():
     tgen = get_topogen()
     logger.info('pre router-start hook')
     #configure r2 mpls interfaces
@@ -156,7 +156,7 @@ def autogenPreRouterStartHook():
         logger.info('setup {0} vrf cust1, {0}-eth4. enabled mpls input.'.format(rtr))
     return;
 
-def autogenPostRouterStartHook():
+def ltemplatePostRouterStartHook():
     logger.info('post router-start hook')
     return;
 
