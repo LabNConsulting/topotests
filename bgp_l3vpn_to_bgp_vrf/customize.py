@@ -160,6 +160,17 @@ def ltemplatePreRouterStartHook():
     intfs = ['lo', 'r2-eth0', 'r2-eth1', 'r2-eth2']
     for intf in intfs:
         cc.doCmd(tgen, 'r2', 'echo 1 > /proc/sys/net/mpls/conf/{}/input'.format(intf))
+    #for test ce1
+    rtrs = ['ce1']
+    cmds = ['ip link add {0}-cust1 type vrf table 10',
+            'ip ru add oif {0}-cust1 table 10',
+            'ip ru add iif {0}-cust1 table 10',
+            'ip link set dev {0}-cust1 up']
+    for rtr in rtrs:
+        router = tgen.gears[rtr]
+        for cmd in cmds:
+            cc.doCmd(tgen, rtr, cmd.format(rtr))
+        cc.doCmd(tgen, rtr, 'ip link set dev {0}-eth0 master {0}-cust1'.format(rtr))
 
     #configure cust1 VRFs & MPLS
     rtrs = ['r1', 'r3', 'r4']

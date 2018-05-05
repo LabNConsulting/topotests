@@ -32,7 +32,7 @@ from lib.ltemplate import *
 def test_check_linux_vrf():
     CliOnFail = None
     # For debugging, uncomment the next line
-    #CliOnFail = 'tgen.mininet_cli'
+    CliOnFail = 'tgen.mininet_cli'
     CheckFunc = 'ltemplateVersionCheck(\'4.1\', iproute2=\'4.9\')'
     #uncomment next line to start cli *before* script is run
     #CheckFunc = 'ltemplateVersionCheck(\'4.1\', cli=True, iproute2=\'4.9\')'
@@ -41,7 +41,7 @@ def test_check_linux_vrf():
 def test_adjacencies():
     CliOnFail = None
     # For debugging, uncomment the next line
-    #CliOnFail = 'tgen.mininet_cli'
+    CliOnFail = 'tgen.mininet_cli'
     CheckFunc = 'ltemplateVersionCheck(\'4.1\')'
     #uncomment next line to start cli *before* script is run
     #CheckFunc = 'ltemplateVersionCheck(\'4.1\', cli=True)'
